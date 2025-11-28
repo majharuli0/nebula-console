@@ -73,7 +73,7 @@ You need to run both the backend server and the frontend client.
     *   Click **"Controller"**, enter the **Room Code**, and join!
 
 ## 📂 Project Structure
-
+```
 nebula-console/
 ├── client/                 # Frontend (React + Vite)
 │   ├── src/
