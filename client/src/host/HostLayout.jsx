@@ -6,7 +6,7 @@ import GameContainer from './GameContainer';
 
 const HostLayout = () => {
   return (
-    <div className="w-full h-screen bg-black text-white">
+    <div className="w-full min-h-screen bg-black text-white">
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/selector" element={<GameSelector />} />
