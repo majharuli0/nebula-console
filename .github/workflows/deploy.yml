@@ -1,0 +1,63 @@
+name: Deploy to cPanel
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-client:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Client Dependencies
+        run: |
+          cd client
+          npm install
+
+      - name: Build Client
+        run: |
+          cd client
+          npm run build
+        env:
+          VITE_SERVER_URL: ${{ secrets.  }}
+
+      - name: Deploy Client to cPanel (FTP)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./client/dist/
+          server-dir: ./nebula.codevaly.com/
+
+  deploy-server:
+    runs-on: ubuntu-latest
+    needs: deploy-client
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Server Dependencies (for verification)
+        run: |
+          cd server
+          npm install
+
+      - name: Deploy Server to cPanel (FTP)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./server/
+          server-dir: ./server.nebula.codevaly.com/
+          exclude: |
+            **/.git*
+            **/node_modules/**
