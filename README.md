@@ -74,20 +74,20 @@ You need to run both the backend server and the frontend client.
 
 ## 📂 Project Structure
 
-```
 nebula-console/
 ├── client/                 # Frontend (React + Vite)
 │   ├── src/
 │   │   ├── controller/     # Mobile Controller UI & Logic
 │   │   ├── games/          # Phaser Game Scenes (Soccer, Snake, etc.)
 │   │   ├── host/           # Host/TV Screen UI
-│   │   └── context/        # Socket Context & Global State
+│   │   ├── context/        # Socket Context & Global State
+│   │   └── constants.js    # Client-side Constants (ESM)
 │   └── ...
 ├── server/                 # Backend (Node.js + Socket.IO)
 │   ├── index.js            # Entry point
 │   ├── socket.js           # Socket event handlers
-│   └── roomManager.js      # Room & Player state management
-└── shared/                 # Shared constants (Events, Game IDs)
+│   ├── roomManager.js      # Room & Player state management
+│   └── constants.js        # Server-side Constants (CJS)
 ```
 
 ## 🤝 Contributing
