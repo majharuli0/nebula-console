@@ -38,3 +38,7 @@ client/.vite
 # Server specific
 server/node_modules
 server/.env
+
+
+#Personal Files
+hide.txt
