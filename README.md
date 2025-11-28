@@ -7,6 +7,8 @@
 
 Built with modern web technologies, it offers a seamless, low-latency gaming experience without the need for app downloads or specialized hardware. Just scan a QR code (or enter a room code) and play!
 
+### 🚀 **Live Demo:** [nebula.codevaly.com](https://nebula.codevaly.com/)
+
 ## 🎮 Features
 
 *   **Zero-Install Controllers:** Use any smartphone with a web browser as a gamepad.
