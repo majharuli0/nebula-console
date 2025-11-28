@@ -9,9 +9,10 @@ export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    // Use the hostname of the device accessing the page (e.g., 192.168.1.X)
-    // This allows phones to connect to the server running on the laptop
-    const newSocket = io(`http://${window.location.hostname}:3001`);
+    // In production, use the provided VITE_SERVER_URL or default to relative path (if served by same origin)
+    // In development, use window.location.hostname with port 3001
+    const serverUrl = import.meta.env.VITE_SERVER_URL || `http://${window.location.hostname}:3001`;
+    const newSocket = io(serverUrl);
     setSocket(newSocket);
 
     return () => newSocket.close();

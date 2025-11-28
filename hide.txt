@@ -1,0 +1,4 @@
+FTP P: ZOPDqIC.*jCW6+qk
+FTP Username: nebula@nebula.codevaly.com
+FTP server: ftp.codevaly.com
+FTP & explicit FTPS port:  21
