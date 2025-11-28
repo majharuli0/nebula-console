@@ -32,4 +32,8 @@ const EVENTS = {
   GAME_STATE: 'GAME_STATE',
 };
 
-module.exports = { EVENTS, GAMES, CONTROLLERS };
+module.exports = {
+  EVENTS,
+  GAMES,
+  CONTROLLERS
+};

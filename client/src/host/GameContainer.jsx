@@ -174,7 +174,7 @@ const GameContainer = () => {
   };
 
   return (
-    <div className="relative w-full h-full bg-slate-900 overflow-hidden">
+    <div className="relative w-full h-screen bg-slate-900 overflow-hidden">
       <div id="phaser-game" className="w-full h-full" />
       
       {/* Hide/Show Toggle */}

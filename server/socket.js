@@ -1,5 +1,5 @@
 const roomManager = require('./roomManager');
-const { EVENTS } = require('../shared/constants');
+const { EVENTS } = require('./constants');
 
 module.exports = (io) => {
   io.on('connection', (socket) => {

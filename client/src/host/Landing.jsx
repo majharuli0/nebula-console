@@ -28,7 +28,7 @@ const Landing = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-full bg-white relative overflow-hidden p-4">
+    <div className="flex flex-col items-center justify-center h-screen bg-white relative overflow-hidden p-4">
       {/* Decorative Background Elements - Hidden on small screens, visible on md+ */}
       <div className="hidden md:block absolute top-10 left-10 w-32 h-32 bg-yellow-400 border-4 border-black transform -rotate-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"></div>
       <div className="hidden md:block absolute bottom-10 right-10 w-48 h-48 bg-cyan-400 border-4 border-black transform rotate-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rounded-full"></div>

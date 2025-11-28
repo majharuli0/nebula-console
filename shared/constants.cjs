@@ -1,14 +1,14 @@
-export const GAMES = {
+const GAMES = {
   SOCCER: 'SOCCER',
   SNAKE: 'SNAKE',
 };
 
-export const CONTROLLERS = {
+const CONTROLLERS = {
   [GAMES.SOCCER]: 'GAMEPAD',
   [GAMES.SNAKE]: 'DPAD',
 };
 
-export const EVENTS = {
+const EVENTS = {
   CONNECT: 'connect',
   DISCONNECT: 'disconnect',
   CREATE_ROOM: 'CREATE_ROOM',
@@ -30,4 +30,10 @@ export const EVENTS = {
   GOAL_SCORED: 'GOAL_SCORED',
   GET_GAME_STATE: 'GET_GAME_STATE',
   GAME_STATE: 'GAME_STATE',
+};
+
+module.exports = {
+  EVENTS,
+  GAMES,
+  CONTROLLERS
 };
