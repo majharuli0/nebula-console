@@ -1,0 +1,5 @@
+import { EVENTS as SHARED_EVENTS, GAMES as SHARED_GAMES, CONTROLLERS as SHARED_CONTROLLERS } from '../../shared/constants';
+
+export const EVENTS = SHARED_EVENTS;
+export const GAMES = SHARED_GAMES;
+export const CONTROLLERS = SHARED_CONTROLLERS;

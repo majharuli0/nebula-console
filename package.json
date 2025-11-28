@@ -1,0 +1,23 @@
+{
+    "name": "nebula-console",
+    "version": "1.0.0",
+    "description": "A web-based local multiplayer gaming console.",
+    "scripts": {
+        "install-all": "npm install && cd client && npm install && cd ../server && npm install",
+        "dev": "concurrently \"npm run server\" \"npm run client\"",
+        "server": "cd server && npm start",
+        "client": "cd client && npm run dev"
+    },
+    "keywords": [
+        "gaming",
+        "console",
+        "socket.io",
+        "phaser",
+        "react"
+    ],
+    "author": "",
+    "license": "MIT",
+    "devDependencies": {
+        "concurrently": "^8.2.2"
+    }
+}
