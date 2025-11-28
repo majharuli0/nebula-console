@@ -27,7 +27,7 @@ jobs:
           cd client
           npm run build
         env:
-          VITE_SERVER_URL: ${{ secrets.  }}
+          VITE_SERVER_URL: ${{  secrets.VITE_SERVER_URL  }}
 
       - name: Deploy Client to cPanel (FTP)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
