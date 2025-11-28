@@ -1,4 +1,7 @@
-# 🌌 Nebula Console
+<div align="center">
+  <img src="client/public/favicon.svg" alt="Nebula Console Logo" width="120" />
+  <h1>Nebula Console</h1>
+</div>
 
 **Nebula Console** is a web-based local multiplayer gaming platform that turns your browser into a console and your smartphone into a controller. 
 
