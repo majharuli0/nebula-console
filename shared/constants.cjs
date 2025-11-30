@@ -30,10 +30,32 @@ const EVENTS = {
   GOAL_SCORED: 'GOAL_SCORED',
   GET_GAME_STATE: 'GET_GAME_STATE',
   GAME_STATE: 'GAME_STATE',
+  SIGNAL: 'SIGNAL',
+};
+
+const INPUT_TYPES = {
+  JOYSTICK: 0,
+  BUTTON_DOWN: 1,
+  FIRE_SHOT: 2,
+  DPAD: 3,
+};
+
+const INPUT_MAP = {
+  // Buttons
+  A: 0,
+  B: 1,
+  POWER: 2,
+  // Directions
+  UP: 3,
+  DOWN: 4,
+  LEFT: 5,
+  RIGHT: 6,
 };
 
 module.exports = {
   EVENTS,
   GAMES,
-  CONTROLLERS
+  CONTROLLERS,
+  INPUT_TYPES,
+  INPUT_MAP
 };

@@ -20,6 +20,25 @@ Built with modern web technologies, it offers a seamless, low-latency gaming exp
 *   **Adaptive Controls:** Controllers automatically adjust their layout based on the active game (Joystick, D-Pad, Buttons).
 *   **Responsive Design:** Beautiful, neon-themed UI powered by Tailwind CSS.
 
+## 🚀 Communication Architecture
+
+Nebula Console uses a hybrid communication system to ensure low latency and high reliability:
+
+### 1. WebRTC (Primary)
+- **Direct P2P:** Establishes a direct peer-to-peer connection between the Host and Controller using `simple-peer`.
+- **Low Latency:** Input data travels directly between devices, bypassing the server.
+- **STUN Support:** Configured with Google and Twilio STUN servers for robust connectivity.
+
+### 2. Socket.IO (Fallback)
+- **Automatic Failover:** If WebRTC fails (e.g., restrictive firewalls), the system seamlessly switches to Socket.IO.
+- **Relay Server:** The Node.js server relays messages between clients.
+
+### 3. Optimized Protocol ⚡
+To minimize bandwidth usage (crucial for mobile networks), we use a custom **Binary/Array Protocol** instead of verbose JSON:
+- **Compact Payloads:** Data is packed into arrays (e.g., `[0, 0.1234, -0.5678]` for Joystick) instead of objects.
+- **Integer Mapping:** Event types and keys are mapped to integers (e.g., `JOYSTICK = 0`, `BUTTON_A = 0`).
+- **Result:** Reduces payload size by ~60-80%.
+
 ## 🛠️ Tech Stack
 
 *   **Frontend (Host & Controller):** React, Vite, Tailwind CSS, Phaser 3 (Game Engine).

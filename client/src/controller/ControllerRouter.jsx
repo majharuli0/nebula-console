@@ -8,7 +8,7 @@ import { GAMES, CONTROLLERS } from '../constants';
 const ControllerRouter = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const socket = useSocket();
+  const { socket, sendInput } = useSocket();
   const { roomCode, gameId } = location.state || {};
   const [activeGame, setActiveGame] = useState(gameId || GAMES.SOCCER);
 
@@ -52,8 +52,8 @@ const ControllerRouter = () => {
   }, [socket, roomCode, navigate]);
 
   const handleInput = (data) => {
-    if (socket && roomCode) {
-      socket.emit('INPUT', { roomCode, ...data });
+    if (roomCode) {
+      sendInput({ roomCode, ...data });
     }
   };
 

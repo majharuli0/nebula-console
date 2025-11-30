@@ -6,7 +6,7 @@ import { GAMES } from '../constants';
 const GameSelector = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const socket = useSocket();
+  const { socket } = useSocket();
   const [roomCode, setRoomCode] = useState(location.state?.roomCode || '');
 
   useEffect(() => {
