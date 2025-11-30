@@ -3,7 +3,7 @@ import { useSocket } from '../context/SocketContext';
 import { useLocation } from 'react-router-dom';
 
 const AimController = () => {
-  const socket = useSocket();
+  const { socket, sendInput } = useSocket();
   const location = useLocation();
   const { roomCode } = location.state || {};
   
@@ -37,12 +37,14 @@ const AimController = () => {
     const power = Math.min(distance / 5, 100); // Cap power
 
     if (power > 10) { // Minimum threshold
-      socket.emit('INPUT', {
-        roomCode,
-        type: 'FIRE_SHOT',
-        angle,
-        power
-      });
+      if (roomCode) {
+        sendInput({
+          roomCode,
+          type: 'FIRE_SHOT',
+          angle,
+          power
+        });
+      }
     }
 
     setDragStart(null);

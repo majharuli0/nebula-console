@@ -4,7 +4,7 @@ import Phaser from 'phaser';
 import { useSocket } from '../context/SocketContext';
 import NeonSoccer from '../games/NeonSoccer';
 import NeonSnake from '../games/NeonSnake';
-import { GAMES } from '../constants';
+import { GAMES, INPUT_TYPES, INPUT_MAP } from '../constants';
 import { Eye, EyeOff, Settings, X, Trophy } from 'lucide-react';
 
 const PLAYER_COLORS = [
@@ -21,7 +21,7 @@ const GameContainer = () => {
   const navigate = useNavigate();
   const [roomCode, setRoomCode] = useState(location.state?.roomCode || '');
   const gameId = location.state?.gameId || GAMES.SOCCER;
-  const socket = useSocket();
+  const { socket, createPeer } = useSocket();
   const gameRef = useRef(null);
   const [players, setPlayers] = useState([]);
   const [showUI, setShowUI] = useState(true);
@@ -59,6 +59,55 @@ const GameContainer = () => {
   useEffect(() => {
     if (!socket || !roomCode) return;
 
+    const handleWebRTCInput = (data, playerId) => {
+        try {
+            // --- 1. Decode Data ---
+            // WebRTC data can arrive as a String or ArrayBuffer (depending on browser/network)
+            let parsed;
+            if (typeof data === 'string') {
+                parsed = JSON.parse(data);
+            } else {
+                const text = new TextDecoder().decode(data);
+                parsed = JSON.parse(text);
+            }
+
+            // --- 2. Unpack Optimized Payload ---
+            // If data is an array, it's our optimized protocol (see SocketContext.jsx)
+            if (Array.isArray(parsed)) {
+                const [type] = parsed;
+                if (type === INPUT_TYPES.JOYSTICK) {
+                    const [, x, y] = parsed;
+                    parsed = { type: 'JOYSTICK', x, y };
+                } else if (type === INPUT_TYPES.BUTTON_DOWN) {
+                    const [, btnId] = parsed;
+                    // Reverse map ID to Key (e.g., 0 -> 'A')
+                    const btnKey = Object.keys(INPUT_MAP).find(key => INPUT_MAP[key] === btnId);
+                    parsed = { type: 'BUTTON_DOWN', button: btnKey };
+                } else if (type === INPUT_TYPES.FIRE_SHOT) {
+                    const [, angle, power] = parsed;
+                    parsed = { type: 'FIRE_SHOT', angle, power };
+                } else if (type === INPUT_TYPES.DPAD) {
+                    const [, dirId] = parsed;
+                    const dirKey = Object.keys(INPUT_MAP).find(key => INPUT_MAP[key] === dirId);
+                    parsed = { type: 'DPAD', direction: dirKey };
+                }
+            }
+            
+            // --- 3. Inject Identity ---
+            // P2P messages don't have sender info, so we inject the playerId manually
+            parsed.playerId = playerId;
+
+            // console.log('WebRTC Input:', parsed); // Uncomment for debugging
+            
+            // --- 4. Route to Game Engine ---
+            if (gameRef.current) {
+                gameRef.current.events.emit('INPUT', parsed);
+            }
+        } catch (e) {
+            console.error('Failed to parse WebRTC data:', e, data);
+        }
+    };
+
     socket.on('PLAYER_JOINED', (player) => {
       setPlayers((prev) => {
         const color = PLAYER_COLORS[prev.length % PLAYER_COLORS.length];
@@ -67,14 +116,48 @@ const GameContainer = () => {
         if (gameRef.current) {
           gameRef.current.events.emit('PLAYER_JOINED', playerWithColor);
         }
+
+        // Initiate WebRTC Peer
+        const peer = createPeer(player.id);
+        if (peer) {
+            peer.removeAllListeners('data'); // Prevent duplicates
+            peer.on('data', (data) => handleWebRTCInput(data, player.id));
+        }
         
         return [...prev, playerWithColor];
       });
     });
 
     socket.on('INPUT', (data) => {
+      // Check if data is wrapped { playerId, data: [...] } or direct
+      let inputData = data;
+      
+      // Unpack if it's the optimized format from server relay
+      if (data.data && Array.isArray(data.data)) {
+          const parsedArray = data.data;
+          const [type] = parsedArray;
+          
+          if (type === INPUT_TYPES.JOYSTICK) {
+              const [, x, y] = parsedArray;
+              inputData = { type: 'JOYSTICK', x, y };
+          } else if (type === INPUT_TYPES.BUTTON_DOWN) {
+              const [, btnId] = parsedArray;
+              const btnKey = Object.keys(INPUT_MAP).find(key => INPUT_MAP[key] === btnId);
+              inputData = { type: 'BUTTON_DOWN', button: btnKey };
+          } else if (type === INPUT_TYPES.FIRE_SHOT) {
+              const [, angle, power] = parsedArray;
+              inputData = { type: 'FIRE_SHOT', angle, power };
+          } else if (type === INPUT_TYPES.DPAD) {
+              const [, dirId] = parsedArray;
+              const dirKey = Object.keys(INPUT_MAP).find(key => INPUT_MAP[key] === dirId);
+              inputData = { type: 'DPAD', direction: dirKey };
+          }
+          // Inject playerId from the wrapper
+          inputData.playerId = data.playerId;
+      }
+
       if (gameRef.current) {
-        gameRef.current.events.emit('INPUT', data);
+        gameRef.current.events.emit('INPUT', inputData);
       }
     });
 
@@ -95,6 +178,13 @@ const GameContainer = () => {
       if (gameRef.current) {
         playersWithColors.forEach(p => {
             gameRef.current.events.emit('PLAYER_JOINED', p);
+            
+            // Initiate WebRTC Peer for existing players
+            const peer = createPeer(p.id);
+            if (peer) {
+                peer.removeAllListeners('data'); // Prevent duplicates
+                peer.on('data', (data) => handleWebRTCInput(data, p.id));
+            }
         });
       }
     });

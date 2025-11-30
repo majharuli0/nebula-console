@@ -6,7 +6,7 @@ import { useSocket } from '../context/SocketContext';
 const Gamepad = () => {
   const location = useLocation();
   const { roomCode } = location.state || {};
-  const socket = useSocket();
+  const { socket, sendInput } = useSocket();
   
   // Power Shot State
   const [powerShotAvailable, setPowerShotAvailable] = useState(false);
@@ -28,12 +28,12 @@ const Gamepad = () => {
 
   // --- Joystick Logic (Rotated for Landscape) ---
   const handleMove = (event) => {
-    if (socket && roomCode) {
+    if (roomCode) {
       // Rotated Mapping (Phone held with Top to the Left)
       // Physical Up (Screen Left, X-) -> Game Up (Y-) => Game Y = Event X
       // Physical Right (Screen Bottom, Y-) -> Game Right (X+) => Game X = -Event Y
       // User requested Y inversion: "top will be bottom"
-      socket.emit('INPUT', {
+      sendInput({
         roomCode,
         type: 'JOYSTICK',
         x: -event.y, 
@@ -43,15 +43,15 @@ const Gamepad = () => {
   };
 
   const handleStop = () => {
-    if (socket && roomCode) {
-      socket.emit('INPUT', { roomCode, type: 'JOYSTICK', x: 0, y: 0 });
+    if (roomCode) {
+      sendInput({ roomCode, type: 'JOYSTICK', x: 0, y: 0 });
     }
   };
 
   // --- Button Logic ---
   const handleBtnPress = (btn) => {
-    if (socket && roomCode) {
-      socket.emit('INPUT', {
+    if (roomCode) {
+      sendInput({
         roomCode,
         type: 'BUTTON_DOWN',
         button: btn

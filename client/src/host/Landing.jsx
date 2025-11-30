@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSocket } from '../context/SocketContext';
 
 const Landing = () => {
-  const socket = useSocket();
+  const { socket } = useSocket();
   const navigate = useNavigate();
   const [roomCode, setRoomCode] = useState('');
 

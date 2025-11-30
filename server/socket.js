@@ -28,12 +28,12 @@ module.exports = (io) => {
       }
     });
 
-    // Input from Controller
+    // --- Input Relay (Socket.IO Fallback) ---
+    // Received when WebRTC fails or is not yet connected.
+    // Data is forwarded to the Host of the room.
     socket.on(EVENTS.INPUT, (data) => {
-      // data: { roomCode, type, ...payload }
-      // We need to know which room this player is in.
-      // Optimization: Client sends roomCode with input, or we look it up.
-      // Sending roomCode is faster than lookup.
+      // data: { roomCode, data: [...] } (Optimized) or { roomCode, ...payload } (Legacy)
+      // We extract roomCode to know where to route it.
       const { roomCode, ...payload } = data;
       if (roomCode) {
         const room = roomManager.getRoom(roomCode);
@@ -81,6 +81,16 @@ module.exports = (io) => {
         if (roomCode && playerId) {
             io.to(playerId).emit('POWER_SHOT_STATUS', { available });
         }
+    });
+
+    // --- WebRTC Signaling Relay ---
+    // Relays Offer/Answer/ICE Candidates between Host and Controller
+    // Server does NOT process media/data, only establishes the P2P connection.
+    socket.on(EVENTS.SIGNAL, ({ target, signal }) => {
+      io.to(target).emit(EVENTS.SIGNAL, {
+        signal,
+        sender: socket.id,
+      });
     });
 
     socket.on('disconnect', () => {
